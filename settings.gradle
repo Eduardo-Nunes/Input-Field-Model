@@ -1,0 +1,3 @@
+rootProject.name='InputModel'
+include ':app'
+include ':inputmodel'
