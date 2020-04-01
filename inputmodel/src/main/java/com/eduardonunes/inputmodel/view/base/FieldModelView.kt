@@ -29,6 +29,8 @@ abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
             }
             field = value
         }
+        get() = fieldInputText?.text.toString()
+
     var inputHasFocus: Boolean = false
         set(value) {
             if (field != value) initFocus()
@@ -107,9 +109,10 @@ abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
 
     private fun setupWithModelListeners(model: FieldModelInterface) = with(model) {
         getKeyListener()?.run { fieldInputText?.setKeyListener(this) }
-        if (mask != null) {
-            maskTextWatcher = MaskTextWatcher(mask.toString())
-            maskTextWatcher?.run { fieldInputText?.addTextChangedListener(this) }
+        maskTextWatcher = mask?.let { maskPattern ->
+            MaskTextWatcher(maskPattern)
+        }?.also { maskWatcher ->
+            fieldInputText?.addTextChangedListener(maskWatcher)
         }
     }
 
@@ -147,9 +150,8 @@ abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
             InputFieldState.ERROR -> onErrorState()
         }
 
-
     protected open fun onDefaultState() {
-        if (lastValidState != null && !lastValidState!!) {
+        if (lastValidState == false) {
             cleanError()
         }
         fieldInputText?.hint = null
@@ -157,7 +159,7 @@ abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
     }
 
     protected open fun onValidState() {
-        if (lastValidState != null && !lastValidState!!) {
+        if (lastValidState == false) {
             cleanError()
         }
         fieldInputLayout?.helperText = fieldViewState.second?.let { context.getString(it) }
@@ -171,7 +173,7 @@ abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
     }
 
     protected open fun onTypingState() {
-        if (lastValidState != null && !lastValidState!!) {
+        if (lastValidState == false) {
             cleanError()
         }
         lastValidState = null

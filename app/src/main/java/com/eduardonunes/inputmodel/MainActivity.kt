@@ -2,9 +2,8 @@ package com.eduardonunes.inputmodel
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-import com.eduardonunes.inputmodel.ui.CompleteNameInputModel
-import com.eduardonunes.inputmodel.ui.PhoneNumberInputModel
+import com.eduardonunes.inputmodel.ui.FullNameFieldModel
+import com.eduardonunes.inputmodel.ui.PhoneNumberFieldModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -16,12 +15,12 @@ class MainActivity : AppCompatActivity() {
 
         inputText?.run {
             inputHasFocus = true
-            setInputModel(CompleteNameInputModel(::onCompleteNameTextChange))
+            setInputModel(FullNameFieldModel(::onCompleteNameTextChange))
         }
 
         inputText2?.run {
             inputHasFocus = false
-            setInputModel(PhoneNumberInputModel(::onPhoneTextChange))
+            setInputModel(PhoneNumberFieldModel(::onPhoneTextChange))
         }
     }
 

@@ -9,7 +9,7 @@ import com.eduardonunes.inputmodel.infrastructure.*
 
 private const val CELL_PHONE_MIN_VALID_LENGTH = 4
 
-class PhoneNumberInputModel(changeCallback: FieldTextChangeCallback) : FieldModelInterface {
+class PhoneNumberFieldModel(changeCallback: FieldTextChangeCallback) : FieldModelInterface {
     override val mask: String = StringMasks.PHONE.mask
     override val capitalize: TextKeyListener.Capitalize? = TextKeyListener.Capitalize.WORDS
     override val labelRes: Int = R.string.phone_label

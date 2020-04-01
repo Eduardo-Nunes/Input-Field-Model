@@ -17,7 +17,7 @@ abstract class DeclarativeLifecycleLayout(context: Context, attrs: AttributeSet?
     open fun onStop() = Unit
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {
-        super.onVisibilityChanged(changedView, visibility);
+        super.onVisibilityChanged(changedView, visibility)
         if (visibility == View.VISIBLE) onStart()
         else onStop()
     }

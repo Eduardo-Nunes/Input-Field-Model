@@ -11,7 +11,7 @@ const val minNames = 2
 const val nameMinLength = 2
 const val nameMaxLength = 120
 
-class CompleteNameInputModel(changeCallback: FieldTextChangeCallback) : FieldModelInterface {
+class FullNameFieldModel(changeCallback: FieldTextChangeCallback) : FieldModelInterface {
     override val mask: String? = null
     override val capitalize: TextKeyListener.Capitalize? = TextKeyListener.Capitalize.WORDS
     override val labelRes: Int = R.string.seu_nome
