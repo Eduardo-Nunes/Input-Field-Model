@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fieldInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:theme="@style/InputLayoutBlackTheme"
+        app:errorTextAppearance="@style/FieldDisclaimerAppearance"
+        app:helperTextTextAppearance="@style/FieldDisclaimerAppearance"
+        app:hintAnimationEnabled="true"
+        app:hintEnabled="true"
+        app:hintTextAppearance="@style/FieldHintAppearance"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/fieldInputText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="8sp"
+            android:singleLine="true"
+            android:textSize="16sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/fieldTrailingIcon"
+        android:layout_width="20dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:importantForAccessibility="no"
+        android:scaleType="centerInside"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/fieldInputLayout"
+        app:layout_constraintEnd_toEndOf="@id/fieldInputLayout"
+        app:layout_constraintTop_toTopOf="@id/fieldInputLayout"
+        app:layout_constraintVertical_bias="0.4"
+        app:srcCompat="@drawable/ic_attention_icon"
+        tools:visibility="visible" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">InputModel</string>
+    <string name="seu_nome">nome e sobrenome</string>
+
+    <string name="nome_completo">nome completo</string>
+    <string name="nome_exemplo">...</string>
+    <string name="nome_invalido">nome inválido</string>
+    <string name="complete_esse_dado">complete este dado</string>
+
+    <string name="phone_label">número com ddd</string>
+    <string name="phone_hint">(00) 0 0000-0000</string>
+    <string name="phone_invalid">número de telefone inválido</string>
+    <string name="only_numbers">somente números</string>
 </resources>
