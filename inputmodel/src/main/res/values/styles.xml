@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="InputLayoutTheme" parent="Base.Widget.MaterialComponents.TextInputLayout">
+    <style name="InputLayoutBlackTheme" parent="Base.Widget.MaterialComponents.TextInputLayout">
+        <item name="colorControlNormal">@color/grey_dark</item>
+        <item name="colorControlActivated">@color/black_light</item>
+        <item name="colorControlHighlight">@color/black_80</item>
+    </style>
+
+    <style name="InputLayoutLightTheme" parent="Base.Widget.MaterialComponents.TextInputLayout">
         <item name="colorControlNormal">@color/grey_light</item>
         <item name="colorControlActivated">@android:color/white</item>
         <item name="colorControlHighlight">@color/white_16</item>
     </style>
 
     <style name="FieldDisclaimerAppearance" parent="TextAppearance.AppCompat.Large">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="helperTextTextColor">@color/black_80</item>
     </style>
 
     <style name="FieldHintAppearance" parent="TextAppearance.AppCompat.Large">
         <item name="android:textSize">14sp</item>
+        <item name="hintTextColor">@color/grey_dark</item>
     </style>
 </resources>

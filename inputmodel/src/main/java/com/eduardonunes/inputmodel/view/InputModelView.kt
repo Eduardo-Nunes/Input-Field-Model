@@ -9,8 +9,7 @@ import com.google.android.material.textfield.TextInputLayout
 
 class InputModelView(context: Context, attrs: AttributeSet) : FieldModelView(context, attrs) {
 
-
-    override fun onCreateView() {
+    init {
         inflate(context, R.layout.input_model_view, this)
     }
 
@@ -21,4 +20,5 @@ class InputModelView(context: Context, attrs: AttributeSet) : FieldModelView(con
     override fun getTextInputLayout(): TextInputLayout? {
         return findViewById(R.id.fieldInputLayout)
     }
+
 }

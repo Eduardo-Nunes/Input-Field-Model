@@ -8,9 +8,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import com.eduardonunes.inputmodel.R
-import com.eduardonunes.inputmodel.extensions.addFilter
-import com.eduardonunes.inputmodel.extensions.addOnTextChangeCallback
-import com.eduardonunes.inputmodel.extensions.showKeyboard
+import com.eduardonunes.inputmodel.extensions.*
 import com.eduardonunes.inputmodel.infrastructure.CharacterFilter.isTypeText
 import com.eduardonunes.inputmodel.infrastructure.FieldModelInterface
 import com.eduardonunes.inputmodel.infrastructure.InputFieldState
@@ -21,22 +19,39 @@ import com.google.android.material.textfield.TextInputLayout
 internal const val ON_KEYBOARD_DELAY = 100L
 internal const val ON_ERROR_DELAY = 50L
 
-abstract class FieldModelView(context: Context?, attrs: AttributeSet?) :
+abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
     DeclarativeLifecycleLayout(context, attrs) {
 
     var inputtedText: String? = null
-    var inputHasFocus: Boolean = true
-    protected var lastValidState: Boolean? = null
-    protected var inputModel: FieldModelInterface? = null
-    protected var fieldInputLayout: TextInputLayout? = null
-    protected var fieldInputText: TextInputEditText? = null
+        set(value) {
+            if (field != value) {
+                fieldInputText?.text = value?.toEditable()
+            }
+            field = value
+        }
+    var inputHasFocus: Boolean = false
+        set(value) {
+            if (field != value) initFocus()
+            field = value
+        }
+
+    fun setInputModel(model: FieldModelInterface) {
+        this._inputModel = model
+        setupWithModelData(model)
+        setupWithModelListeners(model)
+    }
+
+    private var lastValidState: Boolean? = null
+    private var _inputModel: FieldModelInterface? = null
+    private var fieldInputLayout: TextInputLayout? = null
+    private var fieldInputText: TextInputEditText? = null
     private var maskTextWatcher: MaskTextWatcher? = null
     private var validateTextWatcher: TextWatcher? = null
     private val onFocusListener = OnFocusChangeListener { v, hasFocus ->
         if (v == fieldInputText || v == fieldInputLayout) {
             if (hasFocus) {
                 fieldInputText?.postOnAnimationDelayed({
-                    fieldInputText?.hint = inputModel?.hintTextRes?.let { context?.getString(it) }
+                    fieldInputText?.hint = _inputModel?.hintTextRes?.let { context.getString(it) }
                     fieldInputText?.showKeyboard()
                 }, ON_KEYBOARD_DELAY)
             } else {
@@ -65,12 +80,14 @@ abstract class FieldModelView(context: Context?, attrs: AttributeSet?) :
         inputtedText?.run {
             fieldInputText?.setText(this)
         }
-        inputModel?.run {
-            fieldInputLayout?.hint = context.getString(labelRes)
-            fieldInputLayout?.helperText = context.getString(helperTextRes)
-            fieldInputText?.addFilter(getInputFilters())
-            setInputType(inputType)
-        }
+        _inputModel?.run(::setupWithModelData)
+    }
+
+    private fun setupWithModelData(model: FieldModelInterface) = with(model) {
+        fieldInputLayout?.hint = context.getString(labelRes)
+        fieldInputLayout?.helperText = context.getString(helperTextRes)
+        fieldInputText?.addFilter(getInputFilters())
+        setInputType(inputType)
     }
 
     private fun setInputType(inputType: Int) {
@@ -83,15 +100,17 @@ abstract class FieldModelView(context: Context?, attrs: AttributeSet?) :
             fieldViewState = validateInputText(newText)
         }
 
-        inputModel?.run {
-            getKeyListener()?.run { fieldInputText?.setKeyListener(this) }
-            if (mask != null) {
-                maskTextWatcher = MaskTextWatcher(mask.toString())
-                maskTextWatcher?.run { fieldInputText?.addTextChangedListener(this) }
-            }
-        }
+        _inputModel?.run(::setupWithModelListeners)
 
         fieldInputText?.onFocusChangeListener = onFocusListener
+    }
+
+    private fun setupWithModelListeners(model: FieldModelInterface) = with(model) {
+        getKeyListener()?.run { fieldInputText?.setKeyListener(this) }
+        if (mask != null) {
+            maskTextWatcher = MaskTextWatcher(mask.toString())
+            maskTextWatcher?.run { fieldInputText?.addTextChangedListener(this) }
+        }
     }
 
     private fun initFocus() {
@@ -100,7 +119,7 @@ abstract class FieldModelView(context: Context?, attrs: AttributeSet?) :
         }
     }
 
-    override fun onDestroyView() {
+    override fun onDestroy() {
         removeListeners()
     }
 
@@ -169,7 +188,7 @@ abstract class FieldModelView(context: Context?, attrs: AttributeSet?) :
     }
 
     private fun setErrorText() {
-        val errorTextId = fieldViewState.second ?: inputModel?.helperTextRes ?: R.string.empty
+        val errorTextId = fieldViewState.second ?: _inputModel?.helperTextRes ?: R.string.empty
         lastValidState = false
         fieldInputLayout?.run {
             helperText = null
@@ -183,7 +202,7 @@ abstract class FieldModelView(context: Context?, attrs: AttributeSet?) :
         fieldInputLayout?.error = null
         val helperTextId =
             if (fieldInputText?.inputType != EditorInfo.TYPE_TEXT_VARIATION_PASSWORD) {
-                fieldViewState.second ?: inputModel?.helperTextRes ?: R.string.empty
+                fieldViewState.second ?: _inputModel?.helperTextRes ?: R.string.empty
             } else R.string.empty
 
         fieldInputLayout?.helperText = context.getString(helperTextId)
@@ -201,7 +220,7 @@ abstract class FieldModelView(context: Context?, attrs: AttributeSet?) :
     }
 
     private fun validateInputText(validateText: String): Pair<InputFieldState, Int?> {
-        val nonNullModel = inputModel ?: return InputFieldState.DEFAULT to R.string.empty
+        val nonNullModel = _inputModel ?: return InputFieldState.DEFAULT to R.string.empty
 
         return when {
             validateText.isBlank() -> {
@@ -220,4 +239,5 @@ abstract class FieldModelView(context: Context?, attrs: AttributeSet?) :
             }
         }
     }
+
 }

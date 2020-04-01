@@ -1,5 +1,7 @@
 package com.eduardonunes.inputmodel.extensions
 
+import android.text.Editable
+
 fun String.unmask(): String {
     return replace("[.]".toRegex(), String()).replace("[-]".toRegex(), String()).replace("[/]".toRegex(), String())
         .replace("[(]".toRegex(), String()).replace("[ ]".toRegex(), String()).replace("[:]".toRegex(), String())
@@ -23,3 +25,5 @@ fun String.applyMask(mask: String): String {
     }
     return maskedText
 }
+
+fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)

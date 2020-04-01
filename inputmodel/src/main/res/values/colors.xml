@@ -2,6 +2,13 @@
 <resources>
     <color name="yellow">#FFD600</color>
     <color name="orange">#DD2C00</color>
-    <color name="grey_light">#C7C7C7</color>
+    <color name="dark_grey">#000000</color>
+    <color name="black_80">#CC040303</color>
+    <color name="black_light">#0E1317</color>
+    <color name="grey_dark">#2C3032</color>
+    <color name="grey_medium">#55595B</color>
+    <color name="grey_light">#818688</color>
+    <color name="white_medium">#C7C7C7</color>
+    <color name="white">#FFFFFF</color>
     <color name="white_16">#29FFFFFF</color>
 </resources>

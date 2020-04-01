@@ -14,13 +14,12 @@ const val cardholderNameMaxLength = 26
 class CompleteNameInputModel(changeCallback: FieldTextChangeCallback) : FieldModelInterface {
     override val mask: String? = null
     override val capitalize: TextKeyListener.Capitalize? = TextKeyListener.Capitalize.WORDS
-    override val labelRes: Int = R.string.nome_exemplo
-    override val hintTextRes: Int = R.string.seu_nome
+    override val labelRes: Int = R.string.seu_nome
+    override val hintTextRes: Int = R.string.nome_exemplo
     override val helperTextRes: Int = R.string.nome_completo
     override val inputType: Int = EditorInfo.TYPE_TEXT_VARIATION_PERSON_NAME
-    override val maxLength: Int = 8
+    override val maxLength: Int = 120
     override var onTextChangeCallback: FieldTextChangeCallback? = changeCallback
-
 
     override fun validateInput(text: String): Pair<InputFieldState, Int?> {
         return when {
@@ -40,10 +39,10 @@ class CompleteNameInputModel(changeCallback: FieldTextChangeCallback) : FieldMod
     }
 }
 
-fun String.hasInvalidChars(): Boolean =
+private fun String.hasInvalidChars(): Boolean =
     !this.matches("[A-Za-zÀ-ÖØ-öø-ÿ\\s]*".toRegex())
 
-fun String.isFullName(): Boolean {
+private fun String.isFullName(): Boolean {
     val names = trim().split(" ")
 
     return names.size >= cardHolderMinNames &&

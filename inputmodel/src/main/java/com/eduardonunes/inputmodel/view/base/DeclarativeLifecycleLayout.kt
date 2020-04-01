@@ -3,37 +3,39 @@ package com.eduardonunes.inputmodel.view.base
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.RelativeLayout
+import android.widget.FrameLayout
 
-abstract class DeclarativeLifecycleLayout(context: Context?, attrs: AttributeSet?) :
-    RelativeLayout(context, attrs) {
+abstract class DeclarativeLifecycleLayout(context: Context, attrs: AttributeSet?) :
+    FrameLayout(context, attrs) {
 
-    open fun onCreateView() = Unit
+    open fun onCreate() = Unit
     open fun afterViewCreated() = Unit
     open fun onResumeView() = Unit
     open fun onPauseView() = Unit
-    open fun onDestroyView() = Unit
+    open fun onDestroy() = Unit
+    open fun onStart() = Unit
+    open fun onStop() = Unit
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {
         super.onVisibilityChanged(changedView, visibility);
-        if (visibility == View.VISIBLE) onResumeView()
-        else onPauseView()
+        if (visibility == View.VISIBLE) onStart()
+        else onStop()
     }
 
     override fun onWindowFocusChanged(hasWindowFocus: Boolean) {
-        super.onWindowFocusChanged(hasWindowFocus);
+        super.onWindowFocusChanged(hasWindowFocus)
         if (hasWindowFocus) onResumeView()
         else onPauseView()
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        onCreateView()
+        onCreate()
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        onDestroyView()
+        onDestroy()
     }
 
     override fun onFinishInflate() {
