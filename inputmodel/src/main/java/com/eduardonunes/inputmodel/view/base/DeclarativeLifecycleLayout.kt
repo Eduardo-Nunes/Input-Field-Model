@@ -1,18 +1,18 @@
-package com.eduardonunes.inputmodel.view
+package com.eduardonunes.inputmodel.view.base
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.RelativeLayout
 
-abstract class DeclarativeConstraintLayout(context: Context?, attrs: AttributeSet?) :
-    ConstraintLayout(context, attrs) {
+abstract class DeclarativeLifecycleLayout(context: Context?, attrs: AttributeSet?) :
+    RelativeLayout(context, attrs) {
 
-    abstract fun onCreateView()
-    abstract fun afterViewCreated()
-    abstract fun onResumeView()
-    abstract fun onPauseView()
-    abstract fun onDestroyView()
+    open fun onCreateView() = Unit
+    open fun afterViewCreated() = Unit
+    open fun onResumeView() = Unit
+    open fun onPauseView() = Unit
+    open fun onDestroyView() = Unit
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {
         super.onVisibilityChanged(changedView, visibility);

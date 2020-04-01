@@ -4,7 +4,7 @@ import android.text.InputFilter
 import android.text.method.TextKeyListener
 import androidx.annotation.StringRes
 
-interface FieldInterface {
+interface FieldModelInterface {
     val mask: String?
     val capitalize: TextKeyListener.Capitalize?
 

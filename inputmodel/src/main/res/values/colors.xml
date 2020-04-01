@@ -2,4 +2,6 @@
 <resources>
     <color name="yellow">#FFD600</color>
     <color name="orange">#DD2C00</color>
+    <color name="grey_light">#C7C7C7</color>
+    <color name="white_16">#29FFFFFF</color>
 </resources>

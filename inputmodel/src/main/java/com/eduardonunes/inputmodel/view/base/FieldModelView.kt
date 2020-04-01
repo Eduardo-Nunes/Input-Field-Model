@@ -1,10 +1,9 @@
-package com.eduardonunes.inputmodel.view
+package com.eduardonunes.inputmodel.view.base
 
 import android.content.Context
 import android.content.res.ColorStateList
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
@@ -13,36 +12,35 @@ import com.eduardonunes.inputmodel.extensions.addFilter
 import com.eduardonunes.inputmodel.extensions.addOnTextChangeCallback
 import com.eduardonunes.inputmodel.extensions.showKeyboard
 import com.eduardonunes.inputmodel.infrastructure.CharacterFilter.isTypeText
-import com.eduardonunes.inputmodel.infrastructure.FieldInterface
+import com.eduardonunes.inputmodel.infrastructure.FieldModelInterface
 import com.eduardonunes.inputmodel.infrastructure.InputFieldState
 import com.eduardonunes.inputmodel.infrastructure.MaskTextWatcher
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import java.lang.ref.WeakReference
 
 internal const val ON_KEYBOARD_DELAY = 100L
 internal const val ON_ERROR_DELAY = 50L
 
 abstract class FieldModelView(context: Context?, attrs: AttributeSet?) :
-    DeclarativeConstraintLayout(context, attrs) {
+    DeclarativeLifecycleLayout(context, attrs) {
 
     var inputtedText: String? = null
     var inputHasFocus: Boolean = true
     protected var lastValidState: Boolean? = null
-    protected lateinit var _inputModel: FieldInterface
-    protected lateinit var _fieldInputLayout: TextInputLayout
-    protected lateinit var _fieldInputText: TextInputEditText
+    protected var inputModel: FieldModelInterface? = null
+    protected var fieldInputLayout: TextInputLayout? = null
+    protected var fieldInputText: TextInputEditText? = null
     private var maskTextWatcher: MaskTextWatcher? = null
-    private lateinit var validateTextWatcher: TextWatcher
+    private var validateTextWatcher: TextWatcher? = null
     private val onFocusListener = OnFocusChangeListener { v, hasFocus ->
-        if (v == _fieldInputText || v == _fieldInputLayout) {
+        if (v == fieldInputText || v == fieldInputLayout) {
             if (hasFocus) {
-                _fieldInputText.postOnAnimationDelayed({
-                    _fieldInputText.hint = context?.getString(_inputModel.hintTextRes)
-                    _fieldInputText.showKeyboard()
+                fieldInputText?.postOnAnimationDelayed({
+                    fieldInputText?.hint = inputModel?.hintTextRes?.let { context?.getString(it) }
+                    fieldInputText?.showKeyboard()
                 }, ON_KEYBOARD_DELAY)
             } else {
-                _fieldInputText.hint = null
+                fieldInputText?.hint = null
             }
         }
     }
@@ -54,49 +52,51 @@ abstract class FieldModelView(context: Context?, attrs: AttributeSet?) :
     }
 
     protected open fun initView() {
-        _fieldInputText = getTextInputEditText()
-        _fieldInputLayout = getTextInputLayout()
+        fieldInputText = getTextInputEditText()
+        fieldInputLayout = getTextInputLayout()
         initDataView()
     }
 
-    abstract fun getTextInputEditText(): TextInputEditText
+    abstract fun getTextInputEditText(): TextInputEditText?
 
-    abstract fun getTextInputLayout(): TextInputLayout
+    abstract fun getTextInputLayout(): TextInputLayout?
 
     private fun initDataView() {
         inputtedText?.run {
-            _fieldInputText.setText(this)
+            fieldInputText?.setText(this)
         }
-        with(_inputModel) {
-            _fieldInputLayout.hint = context.getString(labelRes)
-            _fieldInputLayout.helperText = context.getString(helperTextRes)
-            _fieldInputText.addFilter(getInputFilters())
+        inputModel?.run {
+            fieldInputLayout?.hint = context.getString(labelRes)
+            fieldInputLayout?.helperText = context.getString(helperTextRes)
+            fieldInputText?.addFilter(getInputFilters())
             setInputType(inputType)
         }
     }
 
     private fun setInputType(inputType: Int) {
-        _fieldInputText.setSelectAllOnFocus(isTypeText(inputType))
-        _fieldInputText.inputType = inputType
+        fieldInputText?.setSelectAllOnFocus(isTypeText(inputType))
+        fieldInputText?.inputType = inputType
     }
 
     protected open fun initListeners() {
-        validateTextWatcher = _fieldInputText.addOnTextChangeCallback { newText ->
+        validateTextWatcher = fieldInputText?.addOnTextChangeCallback { newText ->
             fieldViewState = validateInputText(newText)
         }
 
-        _inputModel.getKeyListener()?.run(_fieldInputText::setKeyListener)
-        if (_inputModel.mask != null) {
-            maskTextWatcher = MaskTextWatcher(_inputModel.mask.toString())
-            maskTextWatcher?.run(_fieldInputText::addTextChangedListener)
+        inputModel?.run {
+            getKeyListener()?.run { fieldInputText?.setKeyListener(this) }
+            if (mask != null) {
+                maskTextWatcher = MaskTextWatcher(mask.toString())
+                maskTextWatcher?.run { fieldInputText?.addTextChangedListener(this) }
+            }
         }
 
-        _fieldInputText.onFocusChangeListener = onFocusListener
+        fieldInputText?.onFocusChangeListener = onFocusListener
     }
 
     private fun initFocus() {
         if (inputHasFocus) {
-            _fieldInputText.requestFocus()
+            fieldInputText?.requestFocus()
         }
     }
 
@@ -105,9 +105,9 @@ abstract class FieldModelView(context: Context?, attrs: AttributeSet?) :
     }
 
     private fun removeListeners() {
-        _fieldInputText.onFocusChangeListener = null
-        _fieldInputText.removeTextChangedListener(validateTextWatcher)
-        maskTextWatcher?.run(_fieldInputText::removeTextChangedListener)
+        fieldInputText?.onFocusChangeListener = null
+        fieldInputText?.removeTextChangedListener(validateTextWatcher)
+        maskTextWatcher?.run { fieldInputText?.removeTextChangedListener(this) }
     }
 
     internal var fieldViewState: Pair<InputFieldState, Int?> = InputFieldState.DEFAULT to null
@@ -133,7 +133,7 @@ abstract class FieldModelView(context: Context?, attrs: AttributeSet?) :
         if (lastValidState != null && !lastValidState!!) {
             cleanError()
         }
-        _fieldInputText.hint = null
+        fieldInputText?.hint = null
         lastValidState = null
     }
 
@@ -141,12 +141,12 @@ abstract class FieldModelView(context: Context?, attrs: AttributeSet?) :
         if (lastValidState != null && !lastValidState!!) {
             cleanError()
         }
-        _fieldInputLayout.helperText = fieldViewState.second?.let { context.getString(it) }
+        fieldInputLayout?.helperText = fieldViewState.second?.let { context.getString(it) }
         lastValidState = true
     }
 
     protected open fun onInvalidState() {
-        if (_fieldInputText.text?.isEmpty() == true) return cleanError()
+        if (fieldInputText?.text?.isEmpty() == true) return cleanError()
         setErrorColor(R.color.yellow)
         setErrorText()
     }
@@ -160,7 +160,7 @@ abstract class FieldModelView(context: Context?, attrs: AttributeSet?) :
 
     protected open fun onEmptyState() {
         lastValidState = null
-        _fieldInputText.text?.clear()
+        fieldInputText?.text?.clear()
     }
 
     protected open fun onErrorState() {
@@ -169,9 +169,9 @@ abstract class FieldModelView(context: Context?, attrs: AttributeSet?) :
     }
 
     private fun setErrorText() {
-        val errorTextId = fieldViewState.second ?: _inputModel.helperTextRes
+        val errorTextId = fieldViewState.second ?: inputModel?.helperTextRes ?: R.string.empty
         lastValidState = false
-        with(_fieldInputLayout) {
+        fieldInputLayout?.run {
             helperText = null
             postDelayed({
                 error = context.getString(errorTextId)
@@ -180,16 +180,16 @@ abstract class FieldModelView(context: Context?, attrs: AttributeSet?) :
     }
 
     protected open fun cleanError() {
-        _fieldInputLayout.error = null
+        fieldInputLayout?.error = null
         val helperTextId =
-            if (_fieldInputText.inputType != EditorInfo.TYPE_TEXT_VARIATION_PASSWORD) {
-                fieldViewState.second ?: _inputModel.helperTextRes
+            if (fieldInputText?.inputType != EditorInfo.TYPE_TEXT_VARIATION_PASSWORD) {
+                fieldViewState.second ?: inputModel?.helperTextRes ?: R.string.empty
             } else R.string.empty
 
-        _fieldInputLayout.helperText = context.getString(helperTextId)
+        fieldInputLayout?.helperText = context.getString(helperTextId)
     }
 
-    private fun setErrorColor(@ColorRes color: Int) = with(_fieldInputLayout) {
+    private fun setErrorColor(@ColorRes color: Int) = fieldInputLayout?.run {
         try {
             postDelayed({
                 setErrorTextColor(
@@ -201,20 +201,22 @@ abstract class FieldModelView(context: Context?, attrs: AttributeSet?) :
     }
 
     private fun validateInputText(validateText: String): Pair<InputFieldState, Int?> {
+        val nonNullModel = inputModel ?: return InputFieldState.DEFAULT to R.string.empty
+
         return when {
             validateText.isBlank() -> {
-                _inputModel.onTextChangeCallback?.invoke(validateText, false)
+                nonNullModel.onTextChangeCallback?.invoke(validateText, false)
                 InputFieldState.INVALID to R.string.complete_data
             }
             validateText.isEmpty() -> {
-                _inputModel.onTextChangeCallback?.invoke(validateText, false)
-                InputFieldState.EMPTY to _inputModel.helperTextRes
+                nonNullModel.onTextChangeCallback?.invoke(validateText, false)
+                InputFieldState.EMPTY to nonNullModel.helperTextRes
             }
-            isTypeText(_inputModel.inputType) -> {
-                _inputModel.validateInput(validateText)
+            isTypeText(nonNullModel.inputType) -> {
+                nonNullModel.validateInput(validateText)
             }
             else -> {
-                _inputModel.validateInput(validateText)
+                nonNullModel.validateInput(validateText)
             }
         }
     }
