@@ -20,14 +20,14 @@ interface FieldInterface {
     val maxLength: Int
     var onTextChangeCallback: FieldTextChangeCallback?
     fun validateInput(text: String): Pair<InputFieldState, Int?>
-    fun inputFilters(): MutableList<InputFilter> {
+    fun getInputFilters(): MutableList<InputFilter> {
         return mutableListOf(
             InputFilter.LengthFilter(maxLength),
             CharacterFilter.emoticon()
         )
     }
 
-    fun keyListener(): TextKeyListener? {
+    fun getKeyListener(): TextKeyListener? {
         return capitalize?.run { TextKeyListener(this, false) }
     }
 }
