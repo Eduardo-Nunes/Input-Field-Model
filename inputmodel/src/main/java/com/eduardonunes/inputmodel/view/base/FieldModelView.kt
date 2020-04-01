@@ -19,6 +19,8 @@ import com.google.android.material.textfield.TextInputLayout
 internal const val ON_KEYBOARD_DELAY = 100L
 internal const val ON_ERROR_DELAY = 50L
 
+private const val STRING_TO_HIDE = " "
+
 abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
     DeclarativeLifecycleLayout(context, attrs) {
 
@@ -43,7 +45,7 @@ abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
         setupWithModelListeners(model)
     }
 
-    private var lastValidState: Boolean? = null
+    protected var lastValidState: Boolean? = null
     private var _inputModel: FieldModelInterface? = null
     private var fieldInputLayout: TextInputLayout? = null
     private var fieldInputText: TextInputEditText? = null
@@ -74,9 +76,9 @@ abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
         initDataView()
     }
 
-    abstract fun getTextInputEditText(): TextInputEditText?
+    protected abstract fun getTextInputEditText(): TextInputEditText?
 
-    abstract fun getTextInputLayout(): TextInputLayout?
+    protected abstract fun getTextInputLayout(): TextInputLayout?
 
     private fun initDataView() {
         inputtedText?.run {
@@ -193,21 +195,30 @@ abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
         val errorTextId = fieldViewState.second ?: _inputModel?.helperTextRes ?: R.string.empty
         lastValidState = false
         fieldInputLayout?.run {
-            helperText = null
+            hideHelper()
             postDelayed({
                 error = context.getString(errorTextId)
             }, ON_ERROR_DELAY)
         }
     }
 
+    private fun hideHelper() {
+        fieldInputLayout?.helperText = STRING_TO_HIDE
+    }
+
+
     protected open fun cleanError() {
-        fieldInputLayout?.error = null
+        hideError()
         val helperTextId =
             if (fieldInputText?.inputType != EditorInfo.TYPE_TEXT_VARIATION_PASSWORD) {
                 fieldViewState.second ?: _inputModel?.helperTextRes ?: R.string.empty
             } else R.string.empty
 
         fieldInputLayout?.helperText = context.getString(helperTextId)
+    }
+
+    private fun hideError() {
+        fieldInputLayout?.error = STRING_TO_HIDE
     }
 
     private fun setErrorColor(@ColorRes color: Int) = fieldInputLayout?.run {

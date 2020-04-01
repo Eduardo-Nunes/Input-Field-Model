@@ -29,9 +29,6 @@
             android:lineSpacingExtra="8sp"
             android:singleLine="true"
             android:textSize="16sp" />
-
-        <!--        android:fontFamily="@font/roboto"-->
-
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -45,6 +42,7 @@
         app:layout_constraintBottom_toBottomOf="@id/fieldInputLayout"
         app:layout_constraintEnd_toEndOf="@id/fieldInputLayout"
         app:layout_constraintTop_toTopOf="@id/fieldInputLayout"
+        app:layout_constraintVertical_bias="0.4"
         app:srcCompat="@drawable/ic_attention_icon"
         tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>
