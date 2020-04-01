@@ -1,2 +1,2 @@
 # Input-Field-Model
-Abstraction of Material Input Layout to simplify customization, masks, input-filters and input validations
+Abstraction/Composition in/of Material Input Layout to simplify customization, masks, input-filters and input validations
