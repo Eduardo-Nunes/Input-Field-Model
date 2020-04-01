@@ -8,13 +8,13 @@ import android.widget.FrameLayout
 abstract class DeclarativeLifecycleLayout(context: Context, attrs: AttributeSet?) :
     FrameLayout(context, attrs) {
 
-    open fun onCreate() = Unit
-    open fun afterViewCreated() = Unit
-    open fun onResumeView() = Unit
-    open fun onPauseView() = Unit
-    open fun onDestroy() = Unit
-    open fun onStart() = Unit
-    open fun onStop() = Unit
+    protected open fun onCreate() = Unit
+    protected open fun afterViewCreated() = Unit
+    protected open fun onResumeView() = Unit
+    protected open fun onPauseView() = Unit
+    protected open fun onDestroy() = Unit
+    protected open fun onStart() = Unit
+    protected open fun onStop() = Unit
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {
         super.onVisibilityChanged(changedView, visibility)
