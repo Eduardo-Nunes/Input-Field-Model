@@ -7,9 +7,9 @@ import com.eduardonunes.inputmodel.infrastructure.FieldModelInterface
 import com.eduardonunes.inputmodel.infrastructure.FieldTextChangeCallback
 import com.eduardonunes.inputmodel.infrastructure.InputFieldState
 
-const val cardHolderMinNames = 2
-const val cardholderNameMinLength = 2
-const val cardholderNameMaxLength = 26
+const val minNames = 2
+const val nameMinLength = 2
+const val nameMaxLength = 120
 
 class CompleteNameInputModel(changeCallback: FieldTextChangeCallback) : FieldModelInterface {
     override val mask: String? = null
@@ -18,16 +18,16 @@ class CompleteNameInputModel(changeCallback: FieldTextChangeCallback) : FieldMod
     override val hintTextRes: Int = R.string.nome_exemplo
     override val helperTextRes: Int = R.string.nome_completo
     override val inputType: Int = EditorInfo.TYPE_TEXT_VARIATION_PERSON_NAME
-    override val maxLength: Int = 120
+    override val maxLength: Int = nameMaxLength
     override var onTextChangeCallback: FieldTextChangeCallback? = changeCallback
 
     override fun validateInput(text: String): Pair<InputFieldState, Int?> {
         return when {
-            text.trim().hasInvalidChars() -> {
+            hasInvalidChars(text.trim()) -> {
                 onTextChangeCallback?.invoke(text, false)
                 InputFieldState.INVALID to R.string.nome_invalido
             }
-            !text.isFullName() -> {
+            !isFullName(text) -> {
                 onTextChangeCallback?.invoke(text, false)
                 InputFieldState.INVALID to R.string.complete_esse_dado
             }
@@ -37,15 +37,15 @@ class CompleteNameInputModel(changeCallback: FieldTextChangeCallback) : FieldMod
             }
         }
     }
-}
 
-private fun String.hasInvalidChars(): Boolean =
-    !this.matches("[A-Za-zÀ-ÖØ-öø-ÿ\\s]*".toRegex())
+    private fun hasInvalidChars(text: String): Boolean =
+        !text.matches("[A-Za-zÀ-ÖØ-öø-ÿ\\s]*".toRegex())
 
-private fun String.isFullName(): Boolean {
-    val names = trim().split(" ")
+    private fun isFullName(text: String): Boolean {
+        val names = text.trim().split(" ")
 
-    return names.size >= cardHolderMinNames &&
-            names.first().length >= cardholderNameMinLength &&
-            names.last().length >= cardholderNameMinLength
+        return names.size >= minNames &&
+                names.first().length >= nameMinLength &&
+                names.last().length >= nameMinLength
+    }
 }
