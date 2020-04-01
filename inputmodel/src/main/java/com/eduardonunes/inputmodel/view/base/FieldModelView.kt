@@ -206,7 +206,6 @@ abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
         fieldInputLayout?.helperText = STRING_TO_HIDE
     }
 
-
     protected open fun cleanError() {
         hideError()
         val helperTextId =
