@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">InputModel</string>
+    <string name="seu_nome">nome e sobrenome</string>
+    <string name="nome_completo">nome completo</string>
+    <string name="nome_exemplo">...</string>
+    <string name="nome_invalido">nome inválido</string>
+    <string name="complete_esse_dado">complete este dado</string>
 </resources>
