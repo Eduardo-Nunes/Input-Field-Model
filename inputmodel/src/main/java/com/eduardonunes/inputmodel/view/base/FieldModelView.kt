@@ -235,11 +235,11 @@ abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
         val nonNullModel = _inputModel ?: return InputFieldState.DEFAULT to R.string.empty
 
         return when {
-            validateText.isBlank() -> {
+            nonNullModel.isRequired && validateText.isBlank() -> {
                 nonNullModel.onTextChangeCallback?.invoke(validateText, false)
                 InputFieldState.INVALID to R.string.complete_data
             }
-            validateText.isEmpty() -> {
+            nonNullModel.isRequired && validateText.isEmpty() -> {
                 nonNullModel.onTextChangeCallback?.invoke(validateText, false)
                 InputFieldState.EMPTY to nonNullModel.helperTextRes
             }

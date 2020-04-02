@@ -17,6 +17,7 @@ class PhoneNumberFieldModel(changeCallback: FieldTextChangeCallback) : FieldMode
     override val helperTextRes: Int = R.string.only_numbers
     override val inputType: Int = EditorInfo.TYPE_TEXT_VARIATION_PERSON_NAME
     override val maxLength: Int = mask.length
+    override val isRequired: Boolean = false
     override var onTextChangeCallback: FieldTextChangeCallback? = changeCallback
 
     override fun validateInput(text: String): Pair<InputFieldState, Int?> {

@@ -19,6 +19,7 @@ class FullNameFieldModel(changeCallback: FieldTextChangeCallback) : FieldModelIn
     override val helperTextRes: Int = R.string.nome_completo
     override val inputType: Int = EditorInfo.TYPE_TEXT_VARIATION_PERSON_NAME
     override val maxLength: Int = nameMaxLength
+    override val isRequired: Boolean = true
     override var onTextChangeCallback: FieldTextChangeCallback? = changeCallback
 
     override fun validateInput(text: String): Pair<InputFieldState, Int?> {
