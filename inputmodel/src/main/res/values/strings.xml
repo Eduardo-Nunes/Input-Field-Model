@@ -2,4 +2,5 @@
 <resources>
     <string name="complete_data">complete este dado</string>
     <string name="empty" />
+    <string name="hide_string">"    "</string>
 </resources>

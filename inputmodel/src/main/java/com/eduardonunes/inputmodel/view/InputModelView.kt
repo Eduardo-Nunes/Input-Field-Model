@@ -26,11 +26,11 @@ class InputModelView(context: Context, attrs: AttributeSet) : FieldModelView(con
     }
 
     override fun getTextInputEditText(): TextInputEditText? {
-        return findViewById(R.id.fieldInputText)
+        return this.findViewById(R.id.fieldInputText)
     }
 
     override fun getTextInputLayout(): TextInputLayout? {
-        return findViewById(R.id.fieldInputLayout)
+        return this.findViewById(R.id.fieldInputLayout)
     }
 
     override fun onTypingState() {

@@ -2,6 +2,7 @@ package com.eduardonunes.inputmodel.view.base
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.os.Parcelable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.inputmethod.EditorInfo
@@ -19,8 +20,6 @@ import com.google.android.material.textfield.TextInputLayout
 internal const val ON_KEYBOARD_DELAY = 100L
 internal const val ON_ERROR_DELAY = 50L
 
-private const val STRING_TO_HIDE = " "
-
 abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
     DeclarativeLifecycleLayout(context, attrs) {
 
@@ -37,6 +36,14 @@ abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
         set(value) {
             if (field != value) initFocus()
             field = value
+        }
+
+    internal var fieldViewState: Pair<InputFieldState, Int?> = InputFieldState.DEFAULT to null
+        set(value) {
+            if (value != field) {
+                field = value
+                invalidateState()
+            }
         }
 
     fun setInputModel(model: FieldModelInterface) {
@@ -134,13 +141,6 @@ abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
         maskTextWatcher?.run { fieldInputText?.removeTextChangedListener(this) }
     }
 
-    internal var fieldViewState: Pair<InputFieldState, Int?> = InputFieldState.DEFAULT to null
-        set(value) {
-            if (value != field) {
-                field = value
-                invalidateState()
-            }
-        }
 
     protected open fun invalidateState() =
         when (fieldViewState.first) {
@@ -203,7 +203,7 @@ abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
     }
 
     private fun hideHelper() {
-        fieldInputLayout?.helperText = STRING_TO_HIDE
+        fieldInputLayout?.helperText = context.getString(R.string.hide_string)
     }
 
     protected open fun cleanError() {
@@ -217,7 +217,7 @@ abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
     }
 
     private fun hideError() {
-        fieldInputLayout?.error = STRING_TO_HIDE
+        fieldInputLayout?.error = context.getString(R.string.hide_string)
     }
 
     private fun setErrorColor(@ColorRes color: Int) = fieldInputLayout?.run {
@@ -232,7 +232,7 @@ abstract class FieldModelView(context: Context, attrs: AttributeSet?) :
     }
 
     private fun validateInputText(validateText: String): Pair<InputFieldState, Int?> {
-        val nonNullModel = _inputModel ?: return InputFieldState.DEFAULT to R.string.empty
+        val nonNullModel = _inputModel ?: return fieldViewState
 
         return when {
             nonNullModel.isRequired && validateText.isBlank() -> {
