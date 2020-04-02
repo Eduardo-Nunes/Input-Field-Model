@@ -18,6 +18,7 @@ interface FieldModelInterface {
     val helperTextRes: Int
     val inputType: Int
     val maxLength: Int
+    val isRequired: Boolean
     var onTextChangeCallback: FieldTextChangeCallback?
     fun validateInput(text: String): Pair<InputFieldState, Int?>
     fun getInputFilters(): MutableList<InputFilter> {

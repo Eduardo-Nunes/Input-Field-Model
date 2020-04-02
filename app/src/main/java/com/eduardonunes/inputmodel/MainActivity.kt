@@ -1,27 +1,45 @@
 package com.eduardonunes.inputmodel
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.eduardonunes.inputmodel.ui.FullNameFieldModel
-import com.eduardonunes.inputmodel.ui.PhoneNumberFieldModel
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProviders.of(this).get(MainViewModel::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        initData()
+        initViews()
+    }
 
-        inputText?.run {
+    private fun initViews() {
+        userNameInputText?.run {
             inputHasFocus = true
-            setInputModel(FullNameFieldModel(::onCompleteNameTextChange))
+            inputtedText = viewModel.nameFieldValue()
+            setInputModel(viewModel.usernameFieldModel)
         }
-
-        inputText2?.run {
+        phoneInputText?.run {
             inputHasFocus = false
-            setInputModel(PhoneNumberFieldModel(::onPhoneTextChange))
+            inputtedText = viewModel.phoneFieldValue()
+            setInputModel(viewModel.phoneFieldModel)
         }
+    }
+
+    private fun initData() = with(viewModel) {
+        userNameFieldValue.observe(this@MainActivity, Observer {
+            onCompleteNameTextChange(text = it.first, isValid = it.second)
+        })
+        phoneFieldValue.observe(this@MainActivity, Observer {
+            onPhoneTextChange(text = it.first, isValid = it.second)
+        })
     }
 
     private fun onCompleteNameTextChange(text: String, isValid: Boolean) {

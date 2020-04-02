@@ -27,3 +27,7 @@ fun String.applyMask(mask: String): String {
 }
 
 fun String.toEditable(): Editable = Editable.Factory.getInstance().newEditable(this)
+
+fun String.copy(): String {
+    return String(toCharArray().clone())
+}

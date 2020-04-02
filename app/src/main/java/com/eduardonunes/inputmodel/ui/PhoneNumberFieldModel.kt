@@ -11,12 +11,13 @@ private const val CELL_PHONE_MIN_VALID_LENGTH = 4
 
 class PhoneNumberFieldModel(changeCallback: FieldTextChangeCallback) : FieldModelInterface {
     override val mask: String = StringMasks.PHONE.mask
-    override val capitalize: TextKeyListener.Capitalize? = TextKeyListener.Capitalize.WORDS
+    override val capitalize: TextKeyListener.Capitalize? = null
     override val labelRes: Int = R.string.phone_label
     override val hintTextRes: Int = R.string.phone_hint
     override val helperTextRes: Int = R.string.only_numbers
-    override val inputType: Int = EditorInfo.TYPE_TEXT_VARIATION_PERSON_NAME
+    override val inputType: Int = EditorInfo.TYPE_CLASS_PHONE
     override val maxLength: Int = mask.length
+    override val isRequired: Boolean = false
     override var onTextChangeCallback: FieldTextChangeCallback? = changeCallback
 
     override fun validateInput(text: String): Pair<InputFieldState, Int?> {
